@@ -65,4 +65,5 @@ jobs:
         with:
           name: PDF Maker ${{ github.ref_name }}
           generate_release_notes: true
-          files: dist/*
+          # Artifacts keep their release/<version>/ folder, so match recursively.
+          files: dist/**/*
