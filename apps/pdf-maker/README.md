@@ -18,8 +18,9 @@ Everything happens on your computer. Nothing is uploaded anywhere.
 Download the latest `pdf-maker` release for your platform from the
 [releases page](https://github.com/scottmallinson/utils/releases):
 
-- **macOS**: the `.dmg` (`arm64` for Apple silicon, `x64` for Intel).
-- **Windows**: the `setup` `.exe` installer, or the `portable` `.exe` that runs without installing.
+- **macOS**: `pdf-maker-<version>-mac-arm64.dmg` for Apple silicon, or `-mac-x64.dmg` for Intel.
+- **Windows**: the installer, `pdf-maker-<version>-win-x64.exe` (or `-win-arm64.exe` on Arm
+  PCs), or `pdf-maker-<version>-win-portable.exe`, which runs without installing.
 
 The app isn't code-signed yet, so the first launch needs a nudge:
 
