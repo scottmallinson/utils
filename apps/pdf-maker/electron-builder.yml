@@ -22,6 +22,8 @@ win:
     - target: portable
       arch: [x64]
 nsis:
+  # Ship separate x64 and arm64 installers rather than one combined installer.
+  buildUniversalInstaller: false
   oneClick: false
   allowToChangeInstallationDirectory: true
 portable:
