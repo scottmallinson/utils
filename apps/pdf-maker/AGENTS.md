@@ -71,3 +71,6 @@ Electron downloads its binary on first use (`Downloading Electron binary...`).
 - The e2e test stubs `dialog.showSaveDialog` in the main process to save without a native dialog,
   and simulates file drops by dispatching a `drop` event with a `DataTransfer`.
 - `vite` is held at v7 because electron-vite 5 doesn't support v8 yet.
+- Electron is held at v43, the last major that runs on macOS 12; v44+ needs macOS 13. Electron
+  43 stops getting security fixes once Electron 46 ships. Upgrading means dropping macOS 12:
+  update `minimumSystemVersion` in `electron-builder.yml`, the README and the Dependabot rule.
