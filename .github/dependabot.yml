@@ -1,0 +1,35 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Held back on purpose; upgrade these majors by hand:
+      # - electron-vite 5 supports Vite up to 7, and plugin-react 6 needs Vite 8.
+      # - TypeScript 7 is the native compiler rewrite.
+      # - @types/node tracks the Node version in .nvmrc.
+      - dependency-name: vite
+        update-types: [version-update:semver-major]
+      - dependency-name: '@vitejs/plugin-react'
+        update-types: [version-update:semver-major]
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
