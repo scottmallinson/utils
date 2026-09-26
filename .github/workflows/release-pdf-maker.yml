@@ -1,0 +1,68 @@
+name: Release PDF Maker
+
+# Push a tag like `pdf-maker-v0.1.0` (matching apps/pdf-maker/package.json) to
+# build installers and publish a GitHub release. Run manually to just build.
+on:
+  push:
+    tags: ['pdf-maker-v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          version=$(node -p "require('./apps/pdf-maker/package.json').version")
+          if [ "pdf-maker-v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package version $version"
+            exit 1
+          fi
+      - name: Build installers
+        run: pnpm --filter pdf-maker package
+        env:
+          # The app is not code-signed yet.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-maker-${{ runner.os }}
+          path: |
+            apps/pdf-maker/release/*/*.dmg
+            apps/pdf-maker/release/*/*.zip
+            apps/pdf-maker/release/*/*.exe
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v3
+        with:
+          name: PDF Maker ${{ github.ref_name }}
+          generate_release_notes: true
+          files: dist/*
