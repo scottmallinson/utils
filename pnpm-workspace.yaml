@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+
+# pnpm 10 skips dependency install scripts unless allowed here.
+# (Electron needs no entry: it downloads its binary on first use.)
+onlyBuiltDependencies:
+  - esbuild
+
+ignoredBuiltDependencies:
+  - electron-winstaller
