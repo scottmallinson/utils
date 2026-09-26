@@ -1,6 +1,7 @@
 # PDF Maker
 
-A small desktop app for macOS and Windows that turns a pile of PDFs and images into a single PDF.
+A small desktop app for macOS (12 Monterey or later) and Windows that turns a pile of PDFs and
+images into a single PDF.
 
 - **Add files** by dragging them onto the window or with **Add files** (⌘O / Ctrl+O).
   Supports PDF, PNG and JPEG, plus WebP, GIF, BMP and AVIF (converted on import).
