@@ -10,6 +10,7 @@ welcome, but there's no roadmap or support promise.
 | Utility | Platforms | What it does |
 | --- | --- | --- |
 | [PDF Maker](apps/pdf-maker) | macOS, Windows | Drop in PDFs and images, arrange and rotate pages, pick a page size, save one PDF |
+| [Prompt Queue](apps/prompt-queue) | macOS, Windows | Queue prompts for Claude Code across your repos, prioritise them, and run them as your usage limits allow |
 
 Downloads, when available, are on the [releases page](https://github.com/scottmallinson/utils/releases).
 

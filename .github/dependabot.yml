@@ -15,7 +15,7 @@ updates:
       # - electron-vite 5 supports Vite up to 7, and plugin-react 6 needs Vite 8.
       # - TypeScript 7 is the native compiler rewrite.
       # - @types/node tracks the Node version in .nvmrc.
-      # - Electron 44+ needs macOS 13; pdf-maker stays on 43 to support macOS 12.
+      # - Electron 44+ needs macOS 13; the desktop apps stay on 43 to support macOS 12.
       - dependency-name: vite
         update-types: [version-update:semver-major]
       - dependency-name: '@vitejs/plugin-react'

@@ -19,6 +19,7 @@ Current utilities:
 | App | What it is |
 | --- | --- |
 | [`apps/pdf-maker`](apps/pdf-maker) | Desktop app (macOS, Windows): drop in PDFs and images, arrange pages, save one PDF |
+| [`apps/prompt-queue`](apps/prompt-queue) | Desktop app (macOS, Windows): queue prompts for Claude Code across repos, run them as usage limits allow |
 
 ## Commands
 
