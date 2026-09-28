@@ -1,0 +1,69 @@
+name: Release Prompt Queue
+
+# Push a tag like `prompt-queue-v0.1.0` (matching apps/prompt-queue/package.json) to
+# build installers and publish a GitHub release. Run manually to just build.
+on:
+  push:
+    tags: ['prompt-queue-v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          version=$(node -p "require('./apps/prompt-queue/package.json').version")
+          if [ "prompt-queue-v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package version $version"
+            exit 1
+          fi
+      - name: Build installers
+        run: pnpm --filter prompt-queue package
+        env:
+          # The app is not code-signed yet.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - uses: actions/upload-artifact@v7
+        with:
+          name: prompt-queue-${{ runner.os }}
+          path: |
+            apps/prompt-queue/release/*/*.dmg
+            apps/prompt-queue/release/*/*.zip
+            apps/prompt-queue/release/*/*.exe
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v3
+        with:
+          name: Prompt Queue ${{ github.ref_name }}
+          generate_release_notes: true
+          # Artifacts keep their release/<version>/ folder, so match recursively.
+          files: dist/**/*
