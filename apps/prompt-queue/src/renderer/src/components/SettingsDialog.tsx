@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { CliCheck } from '../../../preload/api';
 import type { Settings } from '../../../shared/types';
 import { MAX_CONCURRENT, PERMISSION_MODES, type PermissionMode } from '../../../shared/types';
-import { MODEL_SUGGESTIONS, PERMISSION_HINT, PERMISSION_LABELS } from '../lib/labels';
+import { PERMISSION_HINT, PERMISSION_LABELS } from '../lib/labels';
+import { ModelSelect } from './ModelSelect';
 
 interface Props {
   open: boolean;
@@ -16,19 +17,17 @@ interface Props {
 export function SettingsDialog({ open, settings, cli, onChange, onCheckCli, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [claudePath, setClaudePath] = useState(settings.claudePath);
-  const [model, setModel] = useState(settings.defaultModel);
 
   useEffect(() => {
     const element = dialog.current;
     if (!element) return;
     if (open && !element.open) {
       setClaudePath(settings.claudePath);
-      setModel(settings.defaultModel);
       element.showModal();
     } else if (!open && element.open) {
       element.close();
     }
-  }, [open, settings.claudePath, settings.defaultModel]);
+  }, [open, settings.claudePath]);
 
   const number = (value: string) => (value === '' ? Number.NaN : Number(value));
 
@@ -37,7 +36,7 @@ export function SettingsDialog({ open, settings, cli, onChange, onCheckCli, onCl
       <form
         method="dialog"
         onSubmit={() => {
-          onChange({ claudePath, defaultModel: model });
+          onChange({ claudePath });
         }}
       >
         <h2 id="settings-title">Settings</h2>
@@ -147,7 +146,9 @@ export function SettingsDialog({ open, settings, cli, onChange, onCheckCli, onCl
             <select
               value={settings.defaultPermissionMode}
               onChange={(event) =>
-                onChange({ defaultPermissionMode: event.target.value as PermissionMode })
+                onChange({
+                  defaultPermissionMode: event.target.value as PermissionMode,
+                })
               }
             >
               {PERMISSION_MODES.map((mode) => (
@@ -157,21 +158,13 @@ export function SettingsDialog({ open, settings, cli, onChange, onCheckCli, onCl
               ))}
             </select>
           </label>
-          <label className="row">
+          <label className="row" htmlFor="settings-default-model">
             <span>Model</span>
-            <input
-              list="settings-models"
-              value={model}
-              placeholder="Default"
-              spellCheck={false}
-              onChange={(event) => setModel(event.target.value)}
-              onBlur={() => onChange({ defaultModel: model })}
+            <ModelSelect
+              id="settings-default-model"
+              value={settings.defaultModel}
+              onChange={(defaultModel) => onChange({ defaultModel })}
             />
-            <datalist id="settings-models">
-              {MODEL_SUGGESTIONS.map((suggestion) => (
-                <option key={suggestion} value={suggestion} />
-              ))}
-            </datalist>
           </label>
         </fieldset>
 
