@@ -602,8 +602,8 @@ textarea {
   border-top: 1px solid var(--border);
 }
 
-.composer-bar .model-field input {
-  width: 120px;
+.composer-bar .model-field select {
+  width: 150px;
 }
 
 .composer-bar .checkbox {

@@ -8,13 +8,9 @@ import {
   type Repo,
   type Settings,
 } from '../../../shared/types';
-import {
-  MODEL_SUGGESTIONS,
-  PERMISSION_HINT,
-  PERMISSION_LABELS,
-  PRIORITY_LABELS,
-} from '../lib/labels';
+import { PERMISSION_HINT, PERMISSION_LABELS, PRIORITY_LABELS } from '../lib/labels';
 import { Icon } from './Icon';
+import { ModelSelect } from './ModelSelect';
 
 interface Props {
   repos: Repo[];
@@ -131,21 +127,10 @@ export const Composer = forwardRef<HTMLTextAreaElement, Props>(function Composer
             ))}
           </select>
         </label>
-        <label className="field model-field">
+        <label className="field model-field" htmlFor="composer-model">
           <span>Model</span>
-          <input
-            list="model-suggestions"
-            placeholder="Default"
-            value={model}
-            spellCheck={false}
-            onChange={(event) => setModel(event.target.value)}
-          />
+          <ModelSelect id="composer-model" value={model} onChange={setModel} />
         </label>
-        <datalist id="model-suggestions">
-          {MODEL_SUGGESTIONS.map((suggestion) => (
-            <option key={suggestion} value={suggestion} />
-          ))}
-        </datalist>
         <label className="checkbox">
           <input type="checkbox" checked={atTop} onChange={(e) => setAtTop(e.target.checked)} />
           Add to top
