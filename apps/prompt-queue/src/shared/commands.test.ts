@@ -29,6 +29,9 @@ describe('parseCommand', () => {
       type: 'retry',
       itemId: 'a',
     });
+    expect(
+      parseCommand({ type: 'setPermissionMode', itemId: 'a', permissionMode: 'plan' }),
+    ).toEqual({ type: 'setPermissionMode', itemId: 'a', permissionMode: 'plan' });
     expect(parseCommand({ type: 'setPaused', paused: true })).toEqual({
       type: 'setPaused',
       paused: true,
@@ -49,6 +52,8 @@ describe('parseCommand', () => {
     { type: 'edit', itemId: 'a', prompt: '' },
     { type: 'move', itemId: 'a' },
     { type: 'moveToEnd', itemId: 'a', end: 'middle' },
+    { type: 'setPermissionMode', itemId: 'a', permissionMode: 'yolo' },
+    { type: 'setPermissionMode', permissionMode: 'plan' },
     { type: 'setPaused', paused: 'yes' },
     { type: 'resumeTool', toolId: 'other' },
     { type: 'updateSettings', settings: [] },

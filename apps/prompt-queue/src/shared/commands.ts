@@ -30,6 +30,8 @@ export type Command =
   | { type: 'move'; itemId: string; targetId: string; repoId?: string }
   | { type: 'moveToEnd'; itemId: string; end: 'top' | 'bottom'; repoId?: string }
   | { type: 'setPriority'; itemId: string; priority: Priority }
+  /** Changes the permission mode an item's next turn runs with, at any point in its session. */
+  | { type: 'setPermissionMode'; itemId: string; permissionMode: PermissionMode }
   | { type: 'cancel'; itemId: string }
   | { type: 'retry'; itemId: string }
   | { type: 'reply'; itemId: string; text: string; options?: Partial<RunOptions> }
@@ -119,6 +121,12 @@ export function parseCommand(value: unknown): Command | undefined {
     case 'setPriority': {
       const priority = oneOf(value.priority, PRIORITIES);
       return itemId && priority ? { type: 'setPriority', itemId, priority } : undefined;
+    }
+    case 'setPermissionMode': {
+      const permissionMode = oneOf(value.permissionMode, PERMISSION_MODES);
+      return itemId && permissionMode
+        ? { type: 'setPermissionMode', itemId, permissionMode }
+        : undefined;
     }
     case 'cancel':
     case 'retry':

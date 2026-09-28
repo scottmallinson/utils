@@ -49,6 +49,8 @@ export interface Turn {
   createdAt: number;
   startedAt?: number;
   finishedAt?: number;
+  /** The permission mode this turn ran with, set when it starts. */
+  permissionMode?: PermissionMode;
   output: OutputEntry[];
   /** The agent's final message. */
   result?: string;

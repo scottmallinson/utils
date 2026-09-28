@@ -10,6 +10,19 @@ describe('loadState', () => {
       items: [
         item('a1', { sessionId: 's1', message: 'Waiting', status: 'needs-feedback' }),
         item('b1', { repoId: 'b', priority: 'low', rank: 3 }),
+        item('c1', {
+          turns: [
+            {
+              id: 't',
+              kind: 'prompt',
+              prompt: 'p',
+              createdAt: 1,
+              startedAt: 2,
+              permissionMode: 'plan',
+              output: [],
+            },
+          ],
+        }),
       ],
       limits: {
         'claude-code': {
@@ -39,7 +52,13 @@ describe('loadState', () => {
         {
           ...item('bad-output'),
           turns: [
-            { id: 't', kind: 'prompt', prompt: 'p', output: [1, { kind: 'text', text: 'ok' }] },
+            {
+              id: 't',
+              kind: 'prompt',
+              prompt: 'p',
+              permissionMode: 'yolo',
+              output: [1, { kind: 'text', text: 'ok' }],
+            },
           ],
         },
       ],
@@ -50,6 +69,7 @@ describe('loadState', () => {
     expect(loaded.items.map((i) => i.id)).toEqual(['ok', 'bad-output']);
     expect(loaded.items[0]?.options).toEqual({ model: '', permissionMode: 'default' });
     expect(loaded.items[1]?.turns[0]?.output).toEqual([{ kind: 'text', text: 'ok', at: 0 }]);
+    expect(loaded.items[1]?.turns[0]?.permissionMode).toBeUndefined();
     expect(loaded.limits['claude-code']).toEqual({ windows: {} });
     expect(loaded.settings.maxConcurrent).toBe(3);
   });

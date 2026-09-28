@@ -95,10 +95,11 @@ test('queues prompts, shows progress and handles feedback, errors and limits', a
   // Limit meters fill in from what the CLI reported.
   await expect(page.getByText('42% used')).toBeVisible();
 
-  // Reply: it resumes the same session.
+  // Reply: it resumes the same session, with permissions changed mid-session.
   await question.getByRole('button', { name: 'Add a login page [question]' }).click();
   const detail = page.getByRole('complementary', { name: 'Prompt details' });
   await expect(detail.getByText('Should I use the existing helper')).toBeVisible();
+  await detail.getByLabel('Permissions').selectOption('plan');
   await detail.getByLabel('Reply to Claude').fill('Use the existing helper');
   await detail.getByRole('button', { name: 'Queue reply' }).click();
   await expect(question).toHaveAttribute('data-status', 'completed');
@@ -120,6 +121,7 @@ test('queues prompts, shows progress and handles feedback, errors and limits', a
   const [first, reply] = logged;
   const session = first?.args[first.args.indexOf('--session-id') + 1];
   expect(reply?.args).toEqual(expect.arrayContaining(['--resume', session]));
+  expect(reply?.args[reply.args.indexOf('--permission-mode') + 1]).toBe('plan');
   expect(first?.args).toEqual(
     expect.arrayContaining([
       '-p',
