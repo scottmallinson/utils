@@ -54,6 +54,10 @@ Key ideas:
 - **Turns.** An item is a conversation: the first turn is the prompt, later turns are replies or
   automatic continuations after a limit. A first-turn run gets a new `--session-id`; later turns
   `--resume` it.
+- **Permissions can change mid-session.** The composer sets a new item's mode; a reply sets the
+  mode for its turn (`reply` options); while queued or running, the detail header sends
+  `setPermissionMode`. A headless run can't change mode once going, so each turn records the
+  mode it started with (`Turn.permissionMode`) and a change applies from the next turn.
 - **Limits.** Claude Code emits `rate_limit_event` messages (`status` allowed / allowed_warning /
   rejected, `rateLimitType` five_hour / seven_day / ..., `utilization` as a 0-1 fraction, only on
   warnings, and `resetsAt` in epoch seconds). A rejection pauses the tool until the reset plus a

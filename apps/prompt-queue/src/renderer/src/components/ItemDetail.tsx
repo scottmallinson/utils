@@ -12,7 +12,7 @@ import {
   type Turn,
 } from '../../../shared/types';
 import { formatAgo, formatCost, formatDuration, formatTime } from '../lib/format';
-import { PERMISSION_LABELS, PRIORITY_LABELS } from '../lib/labels';
+import { PERMISSION_HINT, PERMISSION_LABELS, PRIORITY_LABELS } from '../lib/labels';
 import { canReply, itemTitle, statusDisplay, totalCost } from '../lib/view';
 import { Icon } from './Icon';
 import { StatusBadge } from './StatusBadge';
@@ -87,7 +87,37 @@ export function ItemDetail({ item, repo, hold, now, onClose, onCommand, onCopy }
             ))}
           </select>
         </label>
-        <span>{PERMISSION_LABELS[item.options.permissionMode]}</span>
+        {canReply(item) ? (
+          // The reply box chooses the permissions for the next turn.
+          <span>{PERMISSION_LABELS[item.options.permissionMode]}</span>
+        ) : (
+          <label
+            className="inline-field"
+            title={
+              item.status === 'running'
+                ? 'The current turn keeps its permissions; a change applies from the next turn.'
+                : PERMISSION_HINT
+            }
+          >
+            Permissions
+            <select
+              value={item.options.permissionMode}
+              onChange={(event) =>
+                onCommand({
+                  type: 'setPermissionMode',
+                  itemId: item.id,
+                  permissionMode: event.target.value as PermissionMode,
+                })
+              }
+            >
+              {PERMISSION_MODES.map((value) => (
+                <option key={value} value={value}>
+                  {PERMISSION_LABELS[value]}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         {item.options.model && <span>{item.options.model}</span>}
         <span>Added {formatAgo(item.createdAt, now)}</span>
         {cost !== undefined && <span>{formatCost(cost)}</span>}
@@ -238,6 +268,9 @@ function TurnView({
       <div className="turn-heading">
         <span>{TURN_LABELS[turn.kind]}</span>
         <span className="turn-time">{formatAgo(turn.createdAt, now)}</span>
+        {turn.permissionMode && (
+          <span className="turn-time">{PERMISSION_LABELS[turn.permissionMode]}</span>
+        )}
         {editable && !editing && (
           <button
             type="button"
@@ -349,7 +382,7 @@ function ReplyBox({
         }}
       />
       <div className="reply-bar">
-        <label className="inline-field">
+        <label className="inline-field" title={PERMISSION_HINT}>
           Permissions
           <select value={mode} onChange={(event) => setMode(event.target.value as PermissionMode)}>
             {PERMISSION_MODES.map((value) => (

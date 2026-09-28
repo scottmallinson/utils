@@ -108,6 +108,19 @@ export function reduce(state: AppState, action: Action, ctx: Context): AppState 
         ctx,
       );
 
+    case 'setPermissionMode':
+      // Allowed in any status: a running turn keeps the mode it started with, and the
+      // change applies from the next turn (a reply, a retry or a continuation).
+      return updateItem(
+        state,
+        action.itemId,
+        (item) =>
+          item.options.permissionMode === action.permissionMode
+            ? item
+            : { ...item, options: { ...item.options, permissionMode: action.permissionMode } },
+        ctx,
+      );
+
     case 'cancel':
       // Running items are stopped by the engine, which then reports `runFinished`.
       return updateItem(
@@ -233,7 +246,11 @@ export function reduce(state: AppState, action: Action, ctx: Context): AppState 
           status: 'running',
           message: undefined,
           sessionId: action.sessionId ?? item.sessionId,
-          turns: updateLastTurn(item.turns, (turn) => ({ ...resetTurn(turn), startedAt: ctx.now })),
+          turns: updateLastTurn(item.turns, (turn) => ({
+            ...resetTurn(turn),
+            startedAt: ctx.now,
+            permissionMode: item.options.permissionMode,
+          })),
         }),
         ctx,
       );

@@ -113,6 +113,7 @@ function loadTurn(raw: unknown): Turn | undefined {
     createdAt: num(raw.createdAt) ?? 0,
     startedAt: num(raw.startedAt),
     finishedAt: num(raw.finishedAt),
+    permissionMode: PERMISSION_MODES.find((mode) => mode === raw.permissionMode),
     output,
     result: str(raw.result),
     costUsd: num(raw.costUsd),

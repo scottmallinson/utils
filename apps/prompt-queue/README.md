@@ -40,7 +40,8 @@ around anything:
   switching logins, no retry storms. By default one prompt runs at a time (up to four across
   different repos if you allow it).
 - Anything Claude Code would normally ask permission for is **denied**, not approved, unless
-  you've chosen otherwise. You pick the permission mode per prompt.
+  you've chosen otherwise. You pick the permission mode per prompt, and can change it at any
+  point in the session.
 
 You're still responsible for following the terms of your Claude plan (and of any other tool you
 use), and your usage counts against your limits just as it would in the terminal.
@@ -84,6 +85,11 @@ it would ask about is denied, and the prompt waits on your feedback, listing wha
 | Plan only | Read and plan, but change nothing |
 | Auto | Let Claude Code's auto mode decide (if your plan has it) |
 | Bypass (risky) | Anything, including running commands. Only for repos you're happy to let it loose in |
+
+You can change the permission mode partway through a session. When you reply, choose the mode
+for that reply, for example to allow edits after Claude was denied one. While a prompt is queued
+or running, change it from the prompt's details; a turn that's already running keeps the mode it
+started with, and the change applies from the next turn. Each turn shows the mode it ran with.
 
 To allow specific commands (say, `npm test`) without bypassing everything, add them to the
 repo's [Claude Code permission settings](https://code.claude.com/docs/en/settings).

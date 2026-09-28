@@ -132,6 +132,31 @@ describe('editing and removing', () => {
     expect(find(next, 'r').turns[0]?.prompt).toBe('Prompt r');
   });
 
+  it('changes the permission mode at any point in the session', () => {
+    const s = state({
+      items: [
+        item('q'),
+        item('r', { status: 'running' }),
+        item('w', { status: 'needs-feedback', sessionId: 's1' }),
+      ],
+    });
+    const next = run(
+      s,
+      ...['q', 'r', 'w'].map(
+        (itemId): Action => ({ type: 'setPermissionMode', itemId, permissionMode: 'plan' }),
+      ),
+    );
+    expect(next.items.map((i) => i.options)).toEqual([
+      { model: '', permissionMode: 'plan' },
+      { model: '', permissionMode: 'plan' },
+      { model: '', permissionMode: 'plan' },
+    ]);
+    expect(find(next, 'w').status).toBe('needs-feedback');
+    expect(run(next, { type: 'setPermissionMode', itemId: 'q', permissionMode: 'plan' })).toBe(
+      next,
+    );
+  });
+
   it('removes anything but running items', () => {
     const s = state({ items: [item('q'), item('r', { status: 'running' })] });
     const next = run(s, { type: 'remove', itemId: 'q' }, { type: 'remove', itemId: 'r' });
@@ -169,7 +194,10 @@ describe('running', () => {
     const ctx = testContext();
     let next = reduce(s, { type: 'runStarted', itemId: 'q', sessionId: 's1' }, ctx);
     expect(find(next, 'q')).toMatchObject({ status: 'running', sessionId: 's1' });
-    expect(find(next, 'q').turns[0]?.startedAt).toBe(NOW);
+    expect(find(next, 'q').turns[0]).toMatchObject({
+      startedAt: NOW,
+      permissionMode: 'acceptEdits',
+    });
 
     next = reduce(
       next,
