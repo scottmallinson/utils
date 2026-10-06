@@ -80,6 +80,13 @@ These keep the app within the AI tools' terms. Don't change them without Scott's
 - The app sends no prompts the user didn't write, except the fixed `CONTINUE_PROMPT` after a
   limit resets.
 
+## Updates
+
+The main process creates an updater from `packages/desktop-updater` (see its `README.md`),
+puts its items in the app menu (macOS) or Help menu (Windows), and starts its daily check. It
+finds new versions by the `prompt-queue-v*` release tags and installs the `.zip` (macOS) or NSIS `.exe`
+(Windows) that the release workflow already uploads, so keep those artifact names as they are.
+
 ## Commands
 
 Run from this directory, or from the root with `pnpm --filter prompt-queue <script>`.

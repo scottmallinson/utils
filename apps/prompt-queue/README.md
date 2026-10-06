@@ -66,6 +66,19 @@ The app isn't code-signed yet, so the first launch needs a nudge:
 Prompt Queue finds `claude` on your PATH and in the usual install locations. If it can't, set
 the path in **Settings**.
 
+## Updates
+
+Prompt Queue checks GitHub for a new release when it starts and once a day, and asks before
+installing anything. Choose **Install Update** and it downloads the new version, checks it against
+the checksum GitHub publishes, and installs it when you restart (or the next time you quit).
+**Check for Updates…** is in the **Prompt Queue** menu on macOS and the **Help** menu on Windows,
+along with the switch for automatic checks. The check only fetches the list of releases from
+GitHub; nothing about you or your files is sent. If prompts are running when you restart, Prompt
+Queue asks before stopping them, as it does for any quit.
+
+The portable Windows app, and a Mac copy in a folder you can't write to (for example, still on
+the disk image), can't replace themselves, so they offer the download page instead.
+
 ## Using it
 
 1. **Add repository** and pick a project folder (a git repo, or any folder you'd run Claude

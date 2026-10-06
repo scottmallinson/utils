@@ -1,0 +1,22 @@
+{
+  "name": "@utils/desktop-updater",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Checks GitHub releases for a newer version of a desktop app and installs it.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "electron": "^43.7.5",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.2"
+  }
+}

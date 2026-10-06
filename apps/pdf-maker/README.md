@@ -29,6 +29,18 @@ The app isn't code-signed yet, so the first launch needs a nudge:
   damaged, run `xattr -cr "/Applications/PDF Maker.app"`.
 - **Windows**: on the SmartScreen prompt, choose **More info** → **Run anyway**.
 
+## Updates
+
+PDF Maker checks GitHub for a new release when it starts and once a day, and asks before
+installing anything. Choose **Install Update** and it downloads the new version, checks it against
+the checksum GitHub publishes, and installs it when you restart (or the next time you quit).
+**Check for Updates…** is in the **PDF Maker** menu on macOS and the **Help** menu on Windows,
+along with the switch for automatic checks. The check only fetches the list of releases from
+GitHub; nothing about you or your files is sent.
+
+The portable Windows app, and a Mac copy in a folder you can't write to (for example, still on
+the disk image), can't replace themselves, so they offer the download page instead.
+
 ## Notes and limits
 
 - Images are placed at 96 DPI when using **Original size**, and scaled to fit otherwise.
