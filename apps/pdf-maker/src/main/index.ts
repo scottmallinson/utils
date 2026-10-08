@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
+import { createUpdater, type Updater } from '@utils/desktop-updater';
 import {
   app,
   BrowserWindow,
@@ -53,10 +54,28 @@ function sendMenuCommand(command: MenuCommand) {
   BrowserWindow.getFocusedWindow()?.webContents.send('menu:command', command);
 }
 
-function buildMenu(): Menu {
+function buildMenu(updater: Updater): Menu {
   const isMac = process.platform === 'darwin';
   const template: MenuItemConstructorOptions[] = [
-    ...(isMac ? [{ role: 'appMenu' } as MenuItemConstructorOptions] : []),
+    ...(isMac
+      ? [
+          {
+            role: 'appMenu',
+            submenu: [
+              { role: 'about' },
+              ...updater.menuItems(),
+              { type: 'separator' },
+              { role: 'services' },
+              { type: 'separator' },
+              { role: 'hide' },
+              { role: 'hideOthers' },
+              { role: 'unhide' },
+              { type: 'separator' },
+              { role: 'quit' },
+            ],
+          } as MenuItemConstructorOptions,
+        ]
+      : []),
     {
       label: 'File',
       submenu: [
@@ -77,6 +96,7 @@ function buildMenu(): Menu {
     { role: 'editMenu' },
     { role: 'viewMenu' },
     { role: 'windowMenu' },
+    ...(isMac ? [] : [{ label: 'Help', submenu: updater.menuItems() }]),
   ];
   return Menu.buildFromTemplate(template);
 }
@@ -132,9 +152,11 @@ function registerIpc() {
 }
 
 void app.whenReady().then(() => {
-  Menu.setApplicationMenu(buildMenu());
+  const updater = createUpdater({ name: 'pdf-maker', repo: 'scottmallinson/utils' });
+  Menu.setApplicationMenu(buildMenu(updater));
   registerIpc();
   createWindow();
+  updater.start();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

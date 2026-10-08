@@ -1,4 +1,5 @@
 import { basename, join } from 'node:path';
+import { createUpdater, type Updater } from '@utils/desktop-updater';
 import {
   app,
   BrowserWindow,
@@ -95,7 +96,7 @@ function sendMenuCommand(command: MenuCommand) {
   window.webContents.send('menu:command', command);
 }
 
-function buildMenu(): Menu {
+function buildMenu(updater: Updater): Menu {
   const isMac = process.platform === 'darwin';
   const settings: MenuItemConstructorOptions = {
     label: isMac ? 'Settings…' : 'Settings',
@@ -109,6 +110,7 @@ function buildMenu(): Menu {
             role: 'appMenu',
             submenu: [
               { role: 'about' },
+              ...updater.menuItems(),
               { type: 'separator' },
               settings,
               { type: 'separator' },
@@ -148,6 +150,7 @@ function buildMenu(): Menu {
     { role: 'editMenu' },
     { role: 'viewMenu' },
     { role: 'windowMenu' },
+    ...(isMac ? [] : [{ label: 'Help', submenu: updater.menuItems() }]),
   ];
   return Menu.buildFromTemplate(template);
 }
@@ -272,10 +275,12 @@ void app.whenReady().then(() => {
     onNotice: showNotice,
   });
 
-  Menu.setApplicationMenu(buildMenu());
+  const updater = createUpdater({ name: 'prompt-queue', repo: 'scottmallinson/utils' });
+  Menu.setApplicationMenu(buildMenu(updater));
   registerIpc();
   mainWindow = createWindow();
   engine.start();
+  updater.start();
 
   app.on('activate', () => {
     mainWindow ??= createWindow();

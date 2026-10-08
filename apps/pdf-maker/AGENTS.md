@@ -44,6 +44,13 @@ Key ideas:
 - Images have no physical size, so they are treated as 96 DPI.
 - The renderer also runs in a plain browser (`pnpm dev:web`), with `window.api` undefined.
 
+## Updates
+
+The main process creates an updater from `packages/desktop-updater` (see its `README.md`),
+puts its items in the app menu (macOS) or Help menu (Windows), and starts its daily check. It
+finds new versions by the `pdf-maker-v*` release tags and installs the `.zip` (macOS) or NSIS `.exe`
+(Windows) that the release workflow already uploads, so keep those artifact names as they are.
+
 ## Commands
 
 Run from this directory, or from the root with `pnpm --filter pdf-maker <script>`.

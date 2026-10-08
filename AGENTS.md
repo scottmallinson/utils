@@ -10,6 +10,7 @@ utilities that are simple, dependable, and easy to pick back up months later.
 apps/<name>/        One directory per utility (pnpm workspace package)
   AGENTS.md         Utility-specific notes for agents: architecture, commands, gotchas
   README.md         User-facing docs: what it does, how to install and use it
+packages/<name>/    Code shared by several utilities, e.g. desktop-updater (auto-updates)
 .github/workflows/  CI (lint, typecheck, unit tests, e2e) and per-app release workflows
 .claude/            Claude Code settings, hooks and skills
 ```
